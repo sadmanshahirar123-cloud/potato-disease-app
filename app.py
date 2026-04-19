@@ -19,7 +19,7 @@ st.write("Upload a potato leaf image and get prediction instantly")
 MODEL_PATH = "model.h5"
 
 if not os.path.exists(MODEL_PATH):
-    url = "YOUR_GOOGLE_DRIVE_LINK"  # 👉 এখানে তোমার direct download link দিবা
+    url = "https://drive.google.com/file/d/1lEsUcnbuwV2tGraxq4OCQ_82Jdx1vmTt"  # 👉 এখানে তোমার direct download link দিবা
     gdown.download(url, MODEL_PATH, quiet=False)
 
 # ── Load model ───────────────────────

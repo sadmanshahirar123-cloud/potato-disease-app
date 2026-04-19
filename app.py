@@ -2,31 +2,38 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+import gdown
+import os
 
-# ── Page config ─────────────────────
+# ── Page setup ───────────────────────
 st.set_page_config(
     page_title="Potato Disease Detector",
     page_icon="🥔",
     layout="centered"
 )
 
-# ── Title ───────────────────────────
 st.title("🥔 Potato Disease Detector")
 st.write("Upload a potato leaf image and get prediction instantly")
 
-# ── Load model ──────────────────────
+# ── Model download from Google Drive ─
+MODEL_PATH = "model.h5"
+
+if not os.path.exists(MODEL_PATH):
+    url = "YOUR_GOOGLE_DRIVE_LINK"  # 👉 এখানে তোমার direct download link দিবা
+    gdown.download(url, MODEL_PATH, quiet=False)
+
+# ── Load model ───────────────────────
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model("model.h5")
-    return model
+    return tf.keras.models.load_model(MODEL_PATH)
 
 model = load_model()
 
-# ── Class names (IMPORTANT) ────────
+# ── Class names ───────────────────────
 class_names = ['Early_blight', 'Late_blight', 'Healthy']
 
-# ── Upload image ────────────────────
-uploaded_file = st.file_uploader("Upload Leaf Image", type=["jpg","jpeg","png"])
+# ── Upload image ──────────────────────
+uploaded_file = st.file_uploader("Upload Leaf Image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
 
@@ -35,7 +42,7 @@ if uploaded_file is not None:
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
     # preprocess
-    img = image.resize((256,256))
+    img = image.resize((256, 256))
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, 0)
 
@@ -48,3 +55,6 @@ if uploaded_file is not None:
     # result
     st.subheader(f"Prediction: {predicted_class}")
     st.write(f"Confidence: {confidence:.2f}%")
+
+else:
+    st.info("Please upload a leaf image to start prediction.")
